@@ -1,0 +1,73 @@
+<!-- layoutテンプレートを拡張 -->
+{% extends 'sns/layout.html' %}
+
+{% block title %}Index{% endblock %}
+
+{% block header %}
+<h1>Sns</h1>
+<p class="caption"><h2><i class="fab fa-themeisle" id="bird1"></i><i class="fab fa-themeisle" id="bird2"></i><i class="fab fa-themeisle" id="bird3"></i> <i class="far fa-comment"></i></h2><br>※グループのチェックをONにしてupdateすると、そのグループに</br>
+    <br>登録されている<i class="fas fa-user-friends"></i>Friendsのメッセージだけが表示されるよ!!</br></p>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"
+        {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<form action="{% url 'index' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="mode" value="__search_form__">
+{{search_form}}
+<button class="btn btn-primary"><i class="fas fa-search"></i> Search</button>
+</form>
+<hr>
+<form action="{% url 'index' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="mode" value="__check_form__">
+{{check_form}}
+<button class="btn btn-primary"><i class="fas fa-sync"></i> update</button>
+</form>
+
+<!-- 重なり修正 -->
+<div　class="z-position">
+{% for item in contents %}
+<hr>
+<p class="message_public">
+{% if item.group.title == 'public' %}
+[public]
+{% endif %}</p>
+
+<!-- bootstrapカード設定 -->
+<div class="container-fluid centered-card">
+<div class="row">
+<div class="col-lg-12 col-sm-9 col-md-12 col-7">
+<div class="card">
+<div class="card-body">
+<h2 class="message_title">{{item.title}}</h2>
+<p class="message_content">{{item.content}}</p>
+<p class="message_date"> ({{item.pub_date}})</p>
+{% if item.share_id > 0 %}
+    <hr class="share_line">
+    <p class="share_item_content">{{item.get_share}}</P>
+{% endif %}
+<p class="message_owner">
+    <span class="message_counter"><i class="far fa-comments"></i>share:{{item.share_count}} <i class="far fa-thumbs-up"></i>good:{{item.good_count}}</span>
+    <i class="fas fa-user-edit"></i>  
+    {{item.owner}}<a href="{% url 'add' %}?name={{item.owner}}" class="btn btn-primary">
+        <i class="fas fa-laugh"></i> add friend</a>
+    <a href="{% url 'share' item.id %}"><button type="button" class="btn btn-primary"><i class="far fa-comments"></i> share</button></a>
+    <a href="{% url 'good' item.id %}"><button type="button" class="btn btn-primary"><i class="far fa-thumbs-up"></i> good!</button></a>
+</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+{% endfor %}
+{% endblock %}
+</div>
+

@@ -1,0 +1,45 @@
+<!-- layoutテンプレートを拡張 -->
+{% extends 'sns/layout.html' %}
+
+{% block title %}Groups{% endblock %}
+
+{% block header %}
+<h1>Group</h1>
+<p class="caption"><h2><i class="fab fa-themeisle" id="bird1"></i><i class="fab fa-themeisle" id="bird2"></i><i class="fab fa-themeisle" id="bird3"></i> <i class="far fa-comment"></i></h2><br>※グループを選択してselect memberすると、そのグループに</br>
+    <br>登録されている<i class="fas fa-user-friends"></i>FriendsがONになるよ!!</br>
+    <br>その後set memberすると、ONにしてある<i class="fas fa-user-friends"></i>Friendsがグループに</br>
+    <br>追加されるよ!!</br></p>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"
+        {% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<i class="fas fa-users"></i><form action="{% url 'groups' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="mode" value="__groups_form__">
+{{groups_form}}
+<button class="btn btn-primary"><i class="far fa-smile-beam"></i> select members</button>
+</form>
+<hr>
+<form action="{% url 'groups' %}" method="post">
+{% csrf_token %}
+<input type="hidden" name="mode" value="__friends_form__"><i class="fas fa-user-friends"></i>
+<input type="hidden" name="group" value="{{group}}">
+{{friends_form}}
+<button class="btn btn-primary"><i class="far fa-smile-beam"></i> set members</button>
+</form>
+<hr>
+<p><i class="fas fa-users"></i> ※新しいGroupの登録</p>
+<form action="{% url 'creategroup' %}" method="post">
+{% csrf_token %}
+{{create_form}}
+<button class="btn btn-primary"><i class="fab fa-slideshare"></i> create new group</button>
+</form>
+{% endblock %}
+
